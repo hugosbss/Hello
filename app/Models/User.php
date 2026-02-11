@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -17,6 +18,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
+    use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -29,7 +31,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'country_id',
     ];
 
     /**
@@ -64,35 +65,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
-
-    public function groups()
-    {
-        return $this->belongsToMany(Group::class);
-    }
-
-    public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
-
-    public function privacySetting()
-    {
-        return $this->hasOneThrough(PrivacySetting::class, Profile::class);
-    }
-
-    public function avatar()
-    {
-        return $this->morphOne(Image::class, 'imageable');
     }
 }
