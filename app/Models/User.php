@@ -29,6 +29,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'country_id',
     ];
 
     /**
@@ -63,5 +64,35 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function privacySetting()
+    {
+        return $this->hasOneThrough(PrivacySetting::class, Profile::class);
+    }
+
+    public function avatar()
+    {
+        return $this->morphOne(Image::class, 'imageable');
     }
 }
