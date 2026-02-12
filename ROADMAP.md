@@ -15,6 +15,8 @@
 - Validar fluxo completo de autenticação
 - Testar middleware personalizado com usuários reais
 
+- Listenner com envio de email + html para após cadastro. 
+
 ## 🔄 Próximas Etapas
 
 ### FRONTEND 
@@ -22,7 +24,6 @@
 - Ligar CreatePost, LikeButton e CommentForm aos models reais (Post, Comment, Like).
 - Paginar/infinite scroll no Feed/Index com query real do banco.
 - Adicionar estados de loading/skeleton com wire:loading para UX de rede social.
-- Listenner com envio de email + html para após cadastro.
 
 ### 🔹 2. Sistema de Follow (Base da Rede Social)
 

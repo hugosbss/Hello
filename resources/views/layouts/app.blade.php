@@ -4,8 +4,40 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <script>
+            (function () {
+                const STORAGE_KEY = 'hello-theme';
+
+                const applyTheme = (theme) => {
+                    const isDark = theme === 'dark';
+                    document.documentElement.classList.toggle('dark', isDark);
+                    document.querySelectorAll('[data-theme-label]').forEach((el) => {
+                        el.textContent = isDark ? 'Tema claro' : 'Tema escuro';
+                    });
+                };
+
+                const getPreferredTheme = () => {
+                    const stored = localStorage.getItem(STORAGE_KEY);
+
+                    if (stored === 'dark' || stored === 'light') {
+                        return stored;
+                    }
+
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                };
+
+                window.toggleTheme = function () {
+                    const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                    localStorage.setItem(STORAGE_KEY, nextTheme);
+                    applyTheme(nextTheme);
+                };
+
+                applyTheme(getPreferredTheme());
+            })();
+        </script>
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" type="image/webp" href="/assets/img/hello.webp">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,15 +49,15 @@
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body class="font-sans antialiased bg-slate-950">
+    <body class="font-sans antialiased bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
         <x-banner />
 
-        <div class="min-h-screen bg-slate-950">
+        <div class="min-h-screen bg-slate-100 dark:bg-slate-950">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
+                <header class="bg-white dark:bg-slate-900 shadow border-b border-slate-200 dark:border-slate-800">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
