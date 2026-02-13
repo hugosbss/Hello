@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo; 
 
-class Comment extends Model
+class Like extends Model
 {
     protected $fillable = [
         'user_id',
-        'body',
+        'post_id',
     ];
 
     public function user(): BelongsTo
@@ -18,8 +17,8 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function commentable(): MorphTo
+    public function post(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Post::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Feed;
 
+use App\Models\Post;
 use Livewire\Component;
 
 class CreatePost extends Component
@@ -14,6 +15,17 @@ class CreatePost extends Component
 
     public function publish(): void
     {
+        $this->validate([
+            'content' => ['required', 'string', 'min:3'],
+        ]);
+
+        Post::create([
+            'user_id' => auth()->id(),
+            'title' => 'Publicacao no feed',
+            'body' => $this->content,
+        ]);
+
+        $this->dispatch('post-created')->to(Index::class);
         $this->reset('content');
         $this->published = true;
     }

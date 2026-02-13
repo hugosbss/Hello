@@ -1,37 +1,109 @@
-# Hello é uma rede social
+# Hello | Rede Social com Laravel 12, Livewire e Jetstream
 
-## Funcionalidades implementadas e arquivos
+Projeto de rede social em desenvolvimento com foco em arquitetura Laravel moderna, autenticação robusta e feed interativo.
 
-### ORM - Relacionamentos 
+## ✨ Stack principal
 
-- Relacionamento One To One (`User -> Profile`), implementado nos arquivos `app/Models/User.php` e `app/Models/Profile.php`.
+- PHP 8.2+
+- Laravel 12
+- Livewire 3
+- Laravel Jetstream (stack Livewire)
+- Laravel Fortify
+- Laravel Sanctum
 
-- Relacionamento One To Many (`User -> Post`), implementado nos arquivos `app/Models/User.php` e `app/Models/Post.php`.
+## ✅ O que já foi implementado
 
-- Relacionamento Many To Many (`User <-> Group`), implementado nos arquivos `app/Models/User.php` e `app/Models/Group.php`.
+### 🧠 ORM e relacionamentos Eloquent
 
-- Relacionamento Has One Through (`User -> PrivacySetting` via `Profile`), implementado nos arquivos `app/Models/User.php`, `app/Models/Profile.php` e `app/Models/PrivacySetting.php`.
+Relacionamentos já praticados no projeto:
 
-- Relacionamento Has Many Through (`Country -> Post` via `User`), implementado no arquivo `app/Models/Country.php`.
+- `One to One`: `User -> Profile`
+- `One to Many`: `User -> Post`
+- `Many to Many`: `User <-> Group`
+- `Has One Through`: `User -> PrivacySetting` (via `Profile`)
+- `Has Many Through`: `Country -> Post` (via `User`)
+- `One to One Polymorphic`: `User/Group -> Image`
+- `One to Many Polymorphic`: `Post/Photo -> Comment`
+- `Many to Many Polymorphic`: `Post/Video <-> Tag`
 
-- Relacionamento One To One Polymorphic (`User/Group -> Image`), implementado nos arquivos `app/Models/User.php`, `app/Models/Group.php` e `app/Models/Image.php`.
+Núcleo social conectado a modelos reais com:
 
-- Relacionamento One To Many Polymorphic (`Post/Photo -> Comment`), implementado nos arquivos `app/Models/Post.php`, `app/Models/Photo.php` e `app/Models/Comment.php`.
+- `Post` com `comments`, `likes`, `tags` e `user`
+- `Comment` polimórfico (`commentable`)
+- `Like` vinculado a `Post` e `User`
 
-- Relacionamento Many To Many Polymorphic (`Post/Video <-> Tag`), implementado nos arquivos `app/Models/Post.php`, `app/Models/Video.php` e `app/Models/Tag.php`.
+### 🔐 Auth completo com Jetstream + Fortify
 
-### LARAVEL - 
+Recursos de autenticação e segurança já ativos:
 
-- Middleware de entrada, implementado no arquivo `app/Http/Middleware/EnsureHelloClientHeader.php`.
+- Registro de usuário
+- Login e recuperação de senha
+- Atualização de senha e perfil
+- 2FA (Two-Factor Authentication) com confirmação
+- Rate limiting de login e 2FA
+- Exclusão de conta
 
-- Middleware de saída, implementado no arquivo `app/Http/Middleware/AddHelloResponseHeaders.php`.
+### 👥 Teams com Jetstream
 
-- Registro dos middlewares customizados, implementado no arquivo `bootstrap/app.php`.
+Implementações já disponíveis:
 
-- Diferença entre grupo `web` e `api` em rotas de demonstração, implementada nos arquivos `routes/web.php` e `routes/api.php`.
+- Criação automática de time pessoal no cadastro
+- Criação e edição de equipes
+- Convite e gestão de membros
+- Remoção de membros e exclusão de equipe
+- Papéis/permissões de equipe (`admin`, `editor`)
 
-- Route Model Binding com `Post`, implementado no arquivo `app/Http/Controllers/PostController.php`.
+### ⚖️ Authorization com Policies
 
-- Rota web com Route Model Binding (`/posts/{post}`), implementada no arquivo `routes/web.php`.
+Policies implementadas:
 
-- Rota api com Route Model Binding (`/api/posts/{post}`), implementada no arquivo `routes/api.php`.
+- `PostPolicy` registrada via `Gate::policy` e usada com `authorize()` no `PostController`
+- `TeamPolicy` para controle de acesso a equipes (visualização, update, membros e remoção)
+
+### 📰 Feed interativo e dinâmico
+
+O feed já não é apenas estático:
+
+- Criação de post com persistência no banco
+- Carregamento de posts reais com `with`, `withCount`, ordenação e limite
+- Interação de curtidas e comentários na estrutura do feed
+- Atualização de lista via evento Livewire (`post-created`)
+
+### 📧 E-mail de boas-vindas
+
+- Template HTML de boas-vindas implementado em `resources/views/emails/welcome.blade.php`
+- Mailable `WelcomeEmail` criado
+- Listener `SendWelcomeNotification` preparado para evento de registro (`Registered`)
+
+## 🖼️ Telas do projeto
+
+### 1) Início (desktop/mobile)
+
+![Início](public/img/inicial.png)
+![Início Desktop](public/img/inicioThemeWhite.png)
+![Início Mobile](public/img/inicio-mobile.png)
+![Início Mobile](public/img/inicioThemeWhiteMobile.png)
+
+### 2) Feed (desktop/mobile)
+
+![Feed Desktop](public/img/feedThemeDark.png)
+![Feed Desktop](public/img/feedThemeWhite.png)
+![Feed Mobile](public/img/feedThemeWhiteMobile.png)
+![Feed Mobile](public/img/feedThemeDarkMobile.png)
+
+### 3) Template de e-mail (evento de cadastro)
+
+![Template de Email de Boas-vindas](public/img/TemplateEmail-BoasVindas.png)
+
+### 4) Profile com Auth
+
+![Profile e Auth](public/img/ProfileAuth.png)
+
+
+## 📌 Objetivo do projeto
+
+Construir uma rede social real para portfólio, explorando boas práticas de Laravel com foco em:
+
+- segurança 
+- arquitetura
+- autenticação moderna

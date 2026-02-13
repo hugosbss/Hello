@@ -14,6 +14,9 @@
                     document.querySelectorAll('[data-theme-label]').forEach((el) => {
                         el.textContent = isDark ? 'Tema claro' : 'Tema escuro';
                     });
+                    document.querySelectorAll('[data-theme-checkbox]').forEach((el) => {
+                        el.checked = isDark;
+                    });
                 };
 
                 const getPreferredTheme = () => {
@@ -26,13 +29,18 @@
                     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 };
 
+                window.setTheme = function (theme) {
+                    localStorage.setItem(STORAGE_KEY, theme);
+                    applyTheme(theme);
+                };
+
                 window.toggleTheme = function () {
                     const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                    localStorage.setItem(STORAGE_KEY, nextTheme);
-                    applyTheme(nextTheme);
+                    window.setTheme(nextTheme);
                 };
 
                 applyTheme(getPreferredTheme());
+                document.addEventListener('DOMContentLoaded', () => applyTheme(getPreferredTheme()));
             })();
         </script>
 

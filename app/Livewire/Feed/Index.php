@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Feed;
 
+use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Index extends Component
@@ -12,55 +14,14 @@ class Index extends Component
 
     public array $onlineFriends = [];
 
+    protected $listeners = [
+        'post-created' => 'refreshPosts',
+        'feed-updated' => 'refreshPosts',
+    ];
+
     public function mount(): void
     {
-        $this->posts = [
-            [
-                'id' => 1,
-                'author' => 'Ana Luiza',
-                'username' => 'anna.luiza',
-                'avatar' => 'AL',
-                'time' => '1 h',
-                'content' => 'Design sprint finalizado. O novo onboarding reduziu o drop em 21% nos testes internos.',
-                'tags' => ['Product', 'Design'],
-                'likes' => 1300,
-                'liked' => true,
-                'comments' => [
-                    ['author' => 'Joao Lima', 'username' => 'joaolima', 'text' => 'Excelente! Quero ver os resultados em producao.'],
-                    ['author' => 'Ana Rosa', 'username' => 'anarosa', 'text' => 'Fluxo ficou muito mais claro.'],
-                    ['author' => 'Pedro V', 'username' => 'pedrov', 'text' => 'Podemos reutilizar no app mobile.'],
-                ],
-            ],
-            [
-                'id' => 2,
-                'author' => 'Ana Almeida',
-                'username' => 'ana.almeida',
-                'avatar' => 'AN',
-                'time' => '22 min',
-                'content' => 'Deploy da API social concluido. Feed com cache de leitura ficou bem mais rapido.',
-                'tags' => ['Backend', 'Laravel'],
-                'likes' => 87,
-                'liked' => false,
-                'comments' => [
-                    ['author' => 'Carla M', 'username' => 'carlam', 'text' => 'Performance ficou muito boa no staging.'],
-                    ['author' => 'Tiago N', 'username' => 'tiagon', 'text' => 'Agora vale medir consumo de memoria.'],
-                ],
-            ],
-            [
-                'id' => 3,
-                'author' => 'Hiago Silva',
-                'username' => 'hiagorei',
-                'avatar' => 'HS',
-                'time' => '1 h',
-                'content' => 'Subi uma proposta de identidade visual para o Hello, com foco em contraste e legibilidade.',
-                'tags' => ['Branding', 'UI'],
-                'likes' => 42,
-                'liked' => false,
-                'comments' => [
-                    ['author' => 'Bruno K', 'username' => 'brunok', 'text' => 'Tipografia ficou excelente.'],
-                ],
-            ],
-        ];
+        $this->refreshPosts();
 
         $this->trendingTopics = ['#Laravel12', '#Livewire', '#UIInspiration', '#ProductBuild'];
 
@@ -70,6 +31,44 @@ class Index extends Component
             ['name' => 'Julia', 'status' => 'Publicou ha 3 min'],
             ['name' => 'Marcos', 'status' => 'Comentou no feed'],
         ];
+    }
+
+    public function loadPosts(): array
+    {
+        $dbPosts = Post::with(['user', 'comments.user'])
+            ->withCount('likes')
+            ->latest()
+            ->take(15)
+            ->get();
+
+        $currentUserId = Auth::id();
+
+        return $dbPosts->map(function (Post $post) use ($currentUserId) {
+            return [
+                'id' => 'db-'.$post->id,
+                'post_id' => $post->id,
+                'author' => $post->user?->name ?? 'Usuario',
+                'username' => str($post->user?->email ?? 'usuario')->before('@')->toString(),
+                'avatar' => strtoupper(substr($post->user?->name ?? 'U', 0, 2)),
+                'time' => optional($post->created_at)?->diffForHumans() ?? 'agora',
+                'content' => $post->body,
+                'tags' => ['Post'],
+                'likes' => (int) $post->likes_count,
+                'liked' => $currentUserId ? $post->likes()->where('user_id', $currentUserId)->exists() : false,
+                'comments' => $post->comments->map(function ($comment) {
+                    return [
+                        'author' => $comment->user?->name ?? 'Usuario',
+                        'username' => str($comment->user?->email ?? 'usuario')->before('@')->toString(),
+                        'text' => $comment->body,
+                    ];
+                })->values()->toArray(),
+            ];
+        })->values()->toArray();
+    }
+
+    public function refreshPosts(): void
+    {
+        $this->posts = $this->loadPosts();
     }
 
     public function render()

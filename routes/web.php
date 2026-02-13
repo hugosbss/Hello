@@ -33,7 +33,12 @@ Route::get('/web/middleware-demo', function (Request $request) {
 Route::get('/posts/{post}', [PostController::class, 'show'])->middleware(['hello.entry', 'hello.exit']);
 
 Route::middleware([ 'auth:sanctum', config('jetstream.auth_session'),'verified',])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', function () { return redirect()->route('feed'); })->name('dashboard');
+    Route::get('/feed', function () { return view('dashboard'); })->name('feed');
 });
+
+Route::post('/feed', [PostController::class, 'store'])->middleware('auth:sanctum');
+Route::get('/posts/{post}/comments', [PostController::class, 'comments'])->middleware('auth:sanctum');
+Route::post('/posts/{post}/comments', [PostController::class, 'commentPost'])->middleware('auth:sanctum');
+Route::get('/posts/{post}/likes', [PostController::class, 'likes'])->middleware('auth:sanctum');
+Route::post('/posts/{post}/toggle-like', [PostController::class, 'toggleLike'])->middleware('auth:sanctum');

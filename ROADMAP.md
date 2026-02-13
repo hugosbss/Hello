@@ -14,14 +14,14 @@
 - Revisar estrutura da tabela users
 - Validar fluxo completo de autenticação
 - Testar middleware personalizado com usuários reais
-
 - Listenner com envio de email + html para após cadastro. 
+- Ligar CreatePost, LikeButton e CommentForm aos models reais (Post, Comment, Like).
 
 ## 🔄 Próximas Etapas
 
 ### FRONTEND 
 
-- Ligar CreatePost, LikeButton e CommentForm aos models reais (Post, Comment, Like).
+- Agendamento de POST
 - Paginar/infinite scroll no Feed/Index com query real do banco.
 - Adicionar estados de loading/skeleton com wire:loading para UX de rede social.
 

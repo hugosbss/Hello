@@ -13,6 +13,9 @@
                 document.querySelectorAll('[data-theme-label]').forEach((el) => {
                     el.textContent = isDark ? 'Tema claro' : 'Tema escuro';
                 });
+                document.querySelectorAll('[data-theme-checkbox]').forEach((el) => {
+                    el.checked = isDark;
+                });
             };
 
             const getPreferredTheme = () => {
@@ -25,13 +28,18 @@
                 return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             };
 
+            window.setTheme = function (theme) {
+                localStorage.setItem(STORAGE_KEY, theme);
+                applyTheme(theme);
+            };
+
             window.toggleTheme = function () {
                 const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                localStorage.setItem(STORAGE_KEY, nextTheme);
-                applyTheme(nextTheme);
+                window.setTheme(nextTheme);
             };
 
             applyTheme(getPreferredTheme());
+            document.addEventListener('DOMContentLoaded', () => applyTheme(getPreferredTheme()));
         })();
     </script>
 
@@ -43,7 +51,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-<div class="relative overflow-hidden">
+<div class="relative min-h-screen overflow-hidden">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_15%_15%,rgba(14,165,233,0.35),transparent_45%),radial-gradient(circle_at_85%_20%,rgba(59,130,246,0.25),transparent_50%),radial-gradient(circle_at_50%_85%,rgba(56,189,248,0.22),transparent_50%)]"></div>
 
     <header class="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
@@ -59,13 +67,23 @@
 
         @if (Route::has('login'))
             <nav class="flex items-center gap-3">
-                <button
-                    type="button"
-                    onclick="window.toggleTheme()"
-                    class="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-semibold hover:bg-slate-200/70 dark:hover:bg-slate-800/70"
-                >
-                    <span data-theme-label>Tema escuro</span>
-                </button>
+                <label class="switch">
+                    <input class="switch__input" data-theme-checkbox type="checkbox" role="switch" onchange="window.setTheme(this.checked ? 'dark' : 'light')" />
+                    <span class="switch__icon">
+                        <span class="switch__icon-part switch__icon-part--1"></span>
+                        <span class="switch__icon-part switch__icon-part--2"></span>
+                        <span class="switch__icon-part switch__icon-part--3"></span>
+                        <span class="switch__icon-part switch__icon-part--4"></span>
+                        <span class="switch__icon-part switch__icon-part--5"></span>
+                        <span class="switch__icon-part switch__icon-part--6"></span>
+                        <span class="switch__icon-part switch__icon-part--7"></span>
+                        <span class="switch__icon-part switch__icon-part--8"></span>
+                        <span class="switch__icon-part switch__icon-part--9"></span>
+                        <span class="switch__icon-part switch__icon-part--10"></span>
+                        <span class="switch__icon-part switch__icon-part--11"></span>
+                    </span>
+                    <span class="switch__sr" data-theme-label>Tema escuro</span>
+                </label>
                 @auth
                     <a href="{{ url('/dashboard') }}" class="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-semibold hover:bg-slate-200/70 dark:hover:bg-slate-800/70">Dashboard</a>
                 @else

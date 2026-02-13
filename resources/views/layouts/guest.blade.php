@@ -15,6 +15,9 @@
                     document.querySelectorAll('[data-theme-label]').forEach((el) => {
                         el.textContent = isDark ? 'Tema claro' : 'Tema escuro';
                     });
+                    document.querySelectorAll('[data-theme-checkbox]').forEach((el) => {
+                        el.checked = isDark;
+                    });
                 };
 
                 const getPreferredTheme = () => {
@@ -27,13 +30,18 @@
                     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 };
 
+                window.setTheme = function (theme) {
+                    localStorage.setItem(STORAGE_KEY, theme);
+                    applyTheme(theme);
+                };
+
                 window.toggleTheme = function () {
                     const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                    localStorage.setItem(STORAGE_KEY, nextTheme);
-                    applyTheme(nextTheme);
+                    window.setTheme(nextTheme);
                 };
 
                 applyTheme(getPreferredTheme());
+                document.addEventListener('DOMContentLoaded', () => applyTheme(getPreferredTheme()));
             })();
         </script>
 
@@ -64,13 +72,23 @@
                 </a>
 
                 <div class="flex items-center gap-2">
-                    <button
-                        type="button"
-                        onclick="window.toggleTheme()"
-                        class="rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-                    >
-                        <span data-theme-label>Tema escuro</span>
-                    </button>
+                    <label class="switch">
+                        <input class="switch__input" data-theme-checkbox type="checkbox" role="switch" onchange="window.setTheme(this.checked ? 'dark' : 'light')" />
+                        <span class="switch__icon">
+                            <span class="switch__icon-part switch__icon-part--1"></span>
+                            <span class="switch__icon-part switch__icon-part--2"></span>
+                            <span class="switch__icon-part switch__icon-part--3"></span>
+                            <span class="switch__icon-part switch__icon-part--4"></span>
+                            <span class="switch__icon-part switch__icon-part--5"></span>
+                            <span class="switch__icon-part switch__icon-part--6"></span>
+                            <span class="switch__icon-part switch__icon-part--7"></span>
+                            <span class="switch__icon-part switch__icon-part--8"></span>
+                            <span class="switch__icon-part switch__icon-part--9"></span>
+                            <span class="switch__icon-part switch__icon-part--10"></span>
+                            <span class="switch__icon-part switch__icon-part--11"></span>
+                        </span>
+                        <span class="switch__sr" data-theme-label>Tema escuro</span>
+                    </label>
                     @if (Route::has('login') && !request()->routeIs('login'))
                         <a href="{{ route('login') }}" class="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Entrar</a>
                     @endif
